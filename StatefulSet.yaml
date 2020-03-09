@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: myapp-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: app-name
+  serviceName: myservice
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: container-nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: nginx-port
+        volumeMounts:
+        - name: nginx-pvc
+          mountPath: /etc/testm
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
