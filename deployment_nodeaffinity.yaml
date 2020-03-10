@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment         
+metadata: 
+ name: myapp-deployment
+ labels:
+   app: myapp
+   type: front-end
+spec:
+  template:
+     metadata:
+       name: myapp-pod
+       labels:
+         app: myapp
+         type: front-end
+     spec:
+       containers:
+        - name: nginx-controller 
+          image: nginx  
+       affinity:
+         nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/e2e-az-name
+                      operator: In
+                      values:
+                      - e2e-az2    
+  replicas: 3        
+  selector:
+    matchLabels:     
+        type: front-end
